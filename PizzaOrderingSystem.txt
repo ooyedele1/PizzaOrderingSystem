@@ -1,0 +1,129 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class PizzaOrderApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Pizza Ordering System")
+        self.root.geometry("600x400")
+        self.cart = []
+        self.total_price = 0
+        
+        # Style configuration
+        self.title_font = ("Arial", 18, "bold")
+        self.button_font = ("Arial", 12)
+
+        # Open the main menu window
+        self.main_menu_window()
+
+    def main_menu_window(self):
+        # Create the main menu window
+        self.main_window = tk.Toplevel(self.root)
+        self.main_window.title("Main Menu")
+        self.main_window.geometry("600x400")
+        
+        title = tk.Label(self.main_window, text="Welcome to Pizza Ordering", font=self.title_font)
+        title.pack(pady=30)
+        
+        menu_button = tk.Button(self.main_window, text="Browse Menu", font=self.button_font, width=20, command=self.browse_menu_window)
+        menu_button.pack(pady=10)
+        
+        customize_button = tk.Button(self.main_window, text="Customize Your Pizza", font=self.button_font, width=20, command=self.customize_pizza_window)
+        customize_button.pack(pady=10)
+        
+        view_cart_button = tk.Button(self.main_window, text="View Cart", font=self.button_font, width=20, command=self.view_cart_window)
+        view_cart_button.pack(pady=10)
+
+    def browse_menu_window(self):
+        # Open the menu window in a new window
+        self.menu_window = tk.Toplevel(self.root)
+        self.menu_window.title("Pizza Menu")
+        self.menu_window.geometry("600x400")
+        
+        # Predefined menu items
+        menu = [
+            {"name": "Margherita", "price": 10},
+            {"name": "Pepperoni", "price": 12},
+            {"name": "Veggie", "price": 11}
+        ]
+        
+        title = tk.Label(self.menu_window, text="Pizza Menu", font=self.title_font)
+        title.pack(pady=20)
+        
+        for pizza in menu:
+            pizza_button = tk.Button(self.menu_window, text=f"{pizza['name']} - ${pizza['price']}", font=self.button_font, width=30,
+                                     command=lambda p=pizza: self.add_to_cart(p))
+            pizza_button.pack(pady=5)
+        
+        back_button = tk.Button(self.menu_window, text="Back to Main Menu", font=self.button_font, width=20, command=self.menu_window.destroy)
+        back_button.pack(pady=20)
+
+    def add_to_cart(self, pizza):
+        self.cart.append(pizza)
+        self.total_price += pizza["price"]
+        messagebox.showinfo("Added to Cart", f"{pizza['name']} has been added to your cart!")
+
+    def customize_pizza_window(self):
+        # Open the customization window in a new window
+        self.customize_window = tk.Toplevel(self.root)
+        self.customize_window.title("Customize Your Pizza")
+        self.customize_window.geometry("600x400")
+        
+        # Pizza customization options
+        title = tk.Label(self.customize_window, text="Customize Your Pizza", font=self.title_font)
+        title.pack(pady=20)
+        
+        crust_label = tk.Label(self.customize_window, text="Choose Crust", font=self.button_font)
+        crust_label.pack(pady=10)
+        
+        crust_options = ["Thin", "Thick", "Stuffed"]
+        for crust in crust_options:
+            crust_button = tk.Button(self.customize_window, text=crust, font=self.button_font, width=20, command=lambda c=crust: self.choose_crust(c))
+            crust_button.pack(pady=5)
+        
+        back_button = tk.Button(self.customize_window, text="Back to Main Menu", font=self.button_font, width=20, command=self.customize_window.destroy)
+        back_button.pack(pady=20)
+
+    def choose_crust(self, crust):
+        messagebox.showinfo("Crust Selected", f"You've selected {crust} crust!")
+
+    def view_cart_window(self):
+        # Open the cart window in a new window
+        self.cart_window = tk.Toplevel(self.root)
+        self.cart_window.title("Your Cart")
+        self.cart_window.geometry("600x400")
+        
+        # Display cart contents
+        title = tk.Label(self.cart_window, text="Your Cart", font=self.title_font)
+        title.pack(pady=20)
+        
+        if not self.cart:
+            empty_message = tk.Label(self.cart_window, text="Your cart is empty!", font=self.button_font)
+            empty_message.pack(pady=10)
+        else:
+            for pizza in self.cart:
+                cart_item = tk.Label(self.cart_window, text=f"{pizza['name']} - ${pizza['price']}", font=self.button_font)
+                cart_item.pack(pady=5)
+        
+        total_label = tk.Label(self.cart_window, text=f"Total: ${self.total_price}", font=("Arial", 14, "bold"))
+        total_label.pack(pady=10)
+        
+        confirm_button = tk.Button(self.cart_window, text="Confirm Order", font=self.button_font, width=20, command=self.confirm_order)
+        confirm_button.pack(pady=10)
+        
+        back_button = tk.Button(self.cart_window, text="Back to Menu", font=self.button_font, width=20, command=self.cart_window.destroy)
+        back_button.pack(pady=10)
+
+    def confirm_order(self):
+        if self.cart:
+            messagebox.showinfo("Order Confirmed", "Your order has been confirmed!")
+            self.cart.clear()
+            self.total_price = 0
+        else:
+            messagebox.showwarning("Empty Cart", "You can't confirm an empty cart!")
+
+# Run the application
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = PizzaOrderApp(root)
+    root.mainloop()
