@@ -1,8 +1,3 @@
-#Name-Olabisi Oyedele
-#Date-03/04/2025
-#Module 08 Final Project
-#Purpose-Pizza Ordering System
-
 import tkinter as tk
 from tkinter import messagebox
 
